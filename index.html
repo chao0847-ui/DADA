@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nail Salon Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+            flex-wrap: wrap;
+        }
+
+        .nav-tabs button {
+            flex: 1;
+            padding: 15px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tabs button:hover {
+            background: #e9e9e9;
+            color: #667eea;
+        }
+
+        .nav-tabs button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            background: #f9f9ff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: #f5f5f5;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .time-slot {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .time-slot:hover {
+            border-color: #667eea;
+            background: #f9f9ff;
+        }
+
+        .time-slot.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .appointment-card {
+            background: #f9f9f9;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .appointment-card h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .appointment-card p {
+            margin-bottom: 8px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .time-slots {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tabs button {
+                border-bottom: 2px solid #ddd;
+            }
+
+            .nav-tabs button.active {
+                border-left: 4px solid #667eea;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✨ Nail Salon Management System ✨</h1>
+            <p>Manage Customers, Members, and Appointments</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('customers')">Customers</button>
+            <button class="tab-btn" onclick="switchTab('members')">Members</button>
+            <button class="tab-btn" onclick="switchTab('appointments')">Appointments</button>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2 style="margin-bottom: 20px; color: #333;">Dashboard Overview</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <h3 id="totalCustomers">0</h3>
+                        <p>Total Customers</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalMembers">0</h3>
+                        <p>Active Members</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalAppointments">0</h3>
+                        <p>Total Appointments</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="todayAppointments">0</h3>
+                        <p>Today's Appointments</p>
+                    </div>
+                </div>
+
+                <h2 style="margin-bottom: 20px; margin-top: 30px; color: #333;">Upcoming Appointments</h2>
+                <div id="upcomingAppointments"></div>
+            </div>
+
+            <!-- Customers Tab -->
+            <div id="customers" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">Customer Records</h2>
+                <div id="customerAlert" class="alert"></div>
+
+                <form onsubmit="addCustomer(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerName">Full Name *</label>
+                            <input type="text" id="customerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone Number *</label>
+                            <input type="tel" id="customerPhone" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customerEmail">Email</label>
+                            <input type="email" id="customerEmail">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerAddress">Address</label>
+                            <input type="text" id="customerAddress">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="customerNotes">Notes</label>
+                        <textarea id="customerNotes" rows="3" placeholder="Add any special notes about the customer..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">Add Customer</button>
+                </form>
+
+                <div class="table-container">
+                    <table id="customerTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Members Tab -->
+            <div id="members" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">Member Management</h2>
+                <div id="memberAlert" class="alert"></div>
+
+                <form onsubmit="addMember(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="memberName">Member Name *</label>
+                            <input type="text" id="memberName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="memberPhone">Phone Number *</label>
+                            <input type="tel" id="memberPhone" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="membershipType">Membership Type *</label>
+                            <select id="membershipType" required>
+                                <option value="">Select Type</option>
+                                <option value="Silver">Silver (10% Discount)</option>
+                                <option value="Gold">Gold (15% Discount)</option>
+                                <option value="Platinum">Platinum (20% Discount)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="membershipStart">Membership Start Date *</label>
+                            <input type="date" id="membershipStart" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="membershipEnd">Membership End Date *</label>
+                            <input type="date" id="membershipEnd" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="memberEmail">Email</label>
+                            <input type="email" id="memberEmail">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Add Member</button>
+                </form>
+
+                <div class="table-container">
+                    <table id="memberTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Membership Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="memberTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Appointments Tab -->
+            <div id="appointments" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">Appointment Scheduling</h2>
+                <div id="appointmentAlert" class="alert"></div>
+
+                <form onsubmit="addAppointment(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appointmentCustomer">Customer Name *</label>
+                            <input type="text" id="appointmentCustomer" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentPhone">Phone Number *</label>
+                            <input type="tel" id="appointmentPhone" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="appointmentDate">Appointment Date *</label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentService">Service *</label>
+                            <select id="appointmentService" required>
+                                <option value="">Select Service</option>
+                                <option value="Manicure">Manicure</option>
+                                <option value="Pedicure">Pedicure</option>
+                                <option value="Gel Manicure">Gel Manicure</option>
+                                <option value="Gel Pedicure">Gel Pedicure</option>
+                                <option value="Nail Art">Nail Art</option>
+                                <option value="Full Set">Full Set</option>
+                                <option value="Acrylic">Acrylic</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label style="margin-bottom: 15px; margin-top: 10px;">Select Time Slot *</label>
+                    <div class="time-slots">
+                        <div class="time-slot" data-time="10:30 AM" onclick="selectTimeSlot(this, '10:30 AM')">
+                            ☀️ 10:30 AM
+                        </div>
+                        <div class="time-slot" data-time="2:00 PM" onclick="selectTimeSlot(this, '2:00 PM')">
+                            🌤️ 2:00 PM
+                        </div>
+                        <div class="time-slot" data-time="6:00 PM" onclick="selectTimeSlot(this, '6:00 PM')">
+                            🌙 6:00 PM
+                        </div>
+                    </div>
+                    <input type="hidden" id="appointmentTime" required>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="appointmentNotes">Special Requests</label>
+                        <textarea id="appointmentNotes" rows="3" placeholder="Add any special requests or notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn">Schedule Appointment</button>
+                </form>
+
+                <h2 style="margin-top: 30px; margin-bottom: 20px; color: #333;">Scheduled Appointments</h2>
+                <div id="appointmentList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let members = JSON.parse(localStorage.getItem('members')) || [];
+        let appointments = JSON.parse(localStorage.getItem('appointments')) || [];
+
+        // ID generators
+        let customerIdCounter = parseInt(localStorage.getItem('customerIdCounter')) || 1;
+        let memberIdCounter = parseInt(localStorage.getItem('memberIdCounter')) || 1;
+        let appointmentIdCounter = parseInt(localStorage.getItem('appointmentIdCounter')) || 1;
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Update displays
+            if (tabName === 'customers') displayCustomers();
+            if (tabName === 'members') displayMembers();
+            if (tabName === 'appointments') displayAppointments();
+            if (tabName === 'dashboard') displayDashboard();
+        }
+
+        // Customer Functions
+        function addCustomer(e) {
+            e.preventDefault();
+
+            const customer = {
+                id: customerIdCounter++,
+                name: document.getElementById('customerName').value,
+                phone: document.getElementById('customerPhone').value,
+                email: document.getElementById('customerEmail').value,
+                address: document.getElementById('customerAddress').value,
+                notes: document.getElementById('customerNotes').value,
+                dateAdded: new Date().toLocaleDateString()
+            };
+
+            customers.push(customer);
+            saveData();
+
+            showAlert('customerAlert', 'Customer added successfully!', 'success');
+            e.target.reset();
+            displayCustomers();
+            updateDashboard();
+        }
+
+        function deleteCustomer(id) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                customers = customers.filter(c => c.id !== id);
+                saveData();
+                showAlert('customerAlert', 'Customer deleted successfully!', 'success');
+                displayCustomers();
+                updateDashboard();
+            }
+        }
+
+        function displayCustomers() {
+            const tbody = document.getElementById('customerTableBody');
+            tbody.innerHTML = '';
+
+            customers.forEach(customer => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.email || 'N/A'}</td>
+                    <td>${customer.address || 'N/A'}</td>
+                    <td>
+                        <button class="btn-edit" onclick="alert('Edit feature coming soon!')">Edit</button>
+                        <button class="btn-delete" onclick="deleteCustomer(${customer.id})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Member Functions
+        function addMember(e) {
+            e.preventDefault();
+
+            const member = {
+                id: memberIdCounter++,
+                name: document.getElementById('memberName').value,
+                phone: document.getElementById('memberPhone').value,
+                membershipType: document.getElementById('membershipType').value,
+                startDate: document.getElementById('membershipStart').value,
+                endDate: document.getElementById('membershipEnd').value,
+                email: document.getElementById('memberEmail').value,
+                dateAdded: new Date().toLocaleDateString()
+            };
+
+            members.push(member);
+            saveData();
+
+            showAlert('memberAlert', 'Member added successfully!', 'success');
+            e.target.reset();
+            displayMembers();
+            updateDashboard();
+        }
+
+        function deleteMember(id) {
+            if (confirm('Are you sure you want to remove this member?')) {
+                members = members.filter(m => m.id !== id);
+                saveData();
+                showAlert('memberAlert', 'Member removed successfully!', 'success');
+                displayMembers();
+                updateDashboard();
+            }
+        }
+
+        function displayMembers() {
+            const tbody = document.getElementById('memberTableBody');
+            tbody.innerHTML = '';
+
+            members.forEach(member => {
+                const endDate = new Date(member.endDate);
+                const today = new Date();
+                const isActive = endDate >= today;
+                const status = isActive ? '✅ Active' : '❌ Expired';
+
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${member.id}</td>
+                    <td>${member.name}</td>
+                    <td>${member.phone}</td>
+                    <td>${member.membershipType}</td>
+                    <td>${member.startDate}</td>
+                    <td>${member.endDate}</td>
+                    <td>${status}</td>
+                    <td>
+                        <button class="btn-edit" onclick="alert('Edit feature coming soon!')">Edit</button>
+                        <button class="btn-delete" onclick="deleteMember(${member.id})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Appointment Functions
+        function selectTimeSlot(element, time) {
+            // Remove selected class from all time slots
+            document.querySelectorAll('.time-slot').forEach(slot => {
+                slot.classList.remove('selected');
+            });
+
+            // Add selected class to clicked slot
+            element.classList.add('selected');
+            document.getElementById('appointmentTime').value = time;
+        }
+
+        function addAppointment(e) {
+            e.preventDefault();
+
+            const time = document.getElementById('appointmentTime').value;
+            if (!time) {
+                showAlert('appointmentAlert', 'Please select a time slot!', 'error');
+                return;
+            }
+
+            const appointment = {
+                id: appointmentIdCounter++,
+                customer: document.getElementById('appointmentCustomer').value,
+                phone: document.getElementById('appointmentPhone').value,
+                date: document.getElementById('appointmentDate').value,
+                time: time,
+                service: document.getElementById('appointmentService').value,
+                notes: document.getElementById('appointmentNotes').value,
+                status: 'Scheduled',
+                dateBooked: new Date().toLocaleDateString()
+            };
+
+            appointments.push(appointment);
+            saveData();
+
+            showAlert('appointmentAlert', 'Appointment scheduled successfully!', 'success');
+            e.target.reset();
+            document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+            displayAppointments();
+            updateDashboard();
+        }
+
+        function deleteAppointment(id) {
+            if (confirm('Are you sure you want to cancel this appointment?')) {
+                appointments = appointments.filter(a => a.id !== id);
+                saveData();
+                showAlert('appointmentAlert', 'Appointment cancelled successfully!', 'success');
+                displayAppointments();
+                updateDashboard();
+            }
+        }
+
+        function displayAppointments() {
+            const appointmentList = document.getElementById('appointmentList');
+            appointmentList.innerHTML = '';
+
+            if (appointments.length === 0) {
+                appointmentList.innerHTML = '<p style="text-align: center; color: #999;">No appointments scheduled yet.</p>';
+                return;
+            }
+
+            // Sort by date and time
+            const sorted = [...appointments].sort((a, b) => {
+                const dateCompare = new Date(a.date) - new Date(b.date);
+                if (dateCompare !== 0) return dateCompare;
+                return a.time.localeCompare(b.time);
+            });
+
+            sorted.forEach(appointment => {
+                const appointmentDate = new Date(appointment.date).toLocaleDateString();
+                const card = document.createElement('div');
+                card.className = 'appointment-card';
+                card.innerHTML = `
+                    <h4>${appointment.customer} - ${appointment.service}</h4>
+                    <p><strong>📅 Date:</strong> ${appointmentDate}</p>
+                    <p><strong>🕐 Time:</strong> ${appointment.time}</p>
+                    <p><strong>📞 Phone:</strong> ${appointment.phone}</p>
+                    <p><strong>📝 Notes:</strong> ${appointment.notes || 'None'}</p>
+                    <button class="btn-delete" onclick="deleteAppointment(${appointment.id})">Cancel Appointment</button>
+                `;
+                appointmentList.appendChild(card);
+            });
+        }
+
+        // Dashboard Functions
+        function displayDashboard() {
+            updateDashboard();
+            displayUpcomingAppointments();
+        }
+
+        function updateDashboard() {
+            document.getElementById('totalCustomers').textContent = customers.length;
+            document.getElementById('totalMembers').textContent = members.length;
+            document.getElementById('totalAppointments').textContent = appointments.length;
+
+            const today = new Date().toISOString().split('T')[0];
+            const todayCount = appointments.filter(a => a.date === today).length;
+            document.getElementById('todayAppointments').textContent = todayCount;
+        }
+
+        function displayUpcomingAppointments() {
+            const container = document.getElementById('upcomingAppointments');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const upcomingList = appointments
+                .filter(a => new Date(a.date) >= today)
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .slice(0, 5);
+
+            if (upcomingList.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">No upcoming appointments.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            upcomingList.forEach(appointment => {
+                const appointmentDate = new Date(appointment.date).toLocaleDateString();
+                const card = document.createElement('div');
+                card.className = 'appointment-card';
+                card.innerHTML = `
+                    <h4>${appointment.customer}</h4>
+                    <p><strong>Service:</strong> ${appointment.service}</p>
+                    <p><strong>Date:</strong> ${appointmentDate} at ${appointment.time}</p>
+                    <p><strong>Phone:</strong> ${appointment.phone}</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Utility Functions
+        function saveData() {
+            localStorage.setItem('customers', JSON.stringify(customers));
+            localStorage.setItem('members', JSON.stringify(members));
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+            localStorage.setItem('customerIdCounter', customerIdCounter);
+            localStorage.setItem('memberIdCounter', memberIdCounter);
+            localStorage.setItem('appointmentIdCounter', appointmentIdCounter);
+        }
+
+        function showAlert(elementId, message, type) {
+            const alert = document.getElementById(elementId);
+            alert.textContent = message;
+            alert.className = `alert ${type}`;
+
+            setTimeout(() => {
+                alert.className = 'alert';
+            }, 3000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            displayDashboard();
+        });
+    </script>
+</body>
+</html>
