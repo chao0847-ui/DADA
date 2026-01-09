@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DADA - 隨機藝術生成器</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-top: 0;
+            font-size: 2.5em;
+        }
+        
+        .description {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .output-label {
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .output-text {
+            color: #666;
+            word-wrap: break-word;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>DADA</h1>
+        <p class="description">隨機藝術生成器 - 創意靈感無限</p>
+        
+        <div class="input-group">
+            <label for="theme">主題：</label>
+            <input type="text" id="theme" placeholder="輸入藝術主題...">
+        </div>
+        
+        <div class="input-group">
+            <label for="style">風格：</label>
+            <select id="style">
+                <option value="">選擇藝術風格...</option>
+                <option value="abstract">抽象</option>
+                <option value="surreal">超現實</option>
+                <option value="pop">流行藝術</option>
+                <option value="impressionist">印象派</option>
+            </select>
+        </div>
+        
+        <button onclick="generateArt()">生成藝術作品</button>
+        
+        <div class="output" id="output" style="display: none;">
+            <div class="output-label">生成結果：</div>
+            <div class="loading" id="loading">正在生成中...</div>
+            <div class="output-text" id="result"></div>
+        </div>
+    </div>
+    
+    <script>
+        function generateArt() {
+            const theme = document.getElementById('theme').value;
+            const style = document.getElementById('style').value;
+            
+            if (!theme || !style) {
+                alert('請填寫所有欄位');
+                return;
+            }
+            
+            const output = document.getElementById('output');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            
+            output.style.display = 'block';
+            loading.style.display = 'block';
+            result.textContent = '';
+            
+            // Simulated art generation
+            setTimeout(() => {
+                const artPieces = [
+                    `《${theme}·${style}》- 一個充滿想像力的藝術作品`,
+                    `在${style}風格下，${theme}化身為抽象的視覺饗宴`,
+                    `《隨機${theme}》- ${style}時期的靈感碰撞`,
+                    `${theme}與${style}的完美融合，創造出獨特的藝術表達`
+                ];
+                
+                const randomArt = artPieces[Math.floor(Math.random() * artPieces.length)];
+                result.textContent = randomArt;
+                loading.style.display = 'none';
+            }, 1500);
+        }
+        
+        document.getElementById('theme').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') generateArt();
+        });
+    </script>
+</body>
+</html>
